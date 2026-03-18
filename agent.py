@@ -6,7 +6,7 @@ Usage:
     uv run agent.py "Your question here"
 
 Output:
-    JSON with 'answer', 'source', and 'tool_calls' fields to stdout.
+    JSON with 'answer', 'source' (optional), and 'tool_calls' fields to stdout.
     All debug/error messages go to stderr.
 """
 
@@ -27,24 +27,35 @@ MAX_TOOL_CALLS = 10
 
 
 def load_env() -> dict[str, str]:
-    """Load environment variables from .env.agent.secret."""
-    env_file = PROJECT_ROOT / ".env.agent.secret"
+    """Load environment variables from .env.agent.secret and .env.docker.secret."""
     env_vars = {}
-
-    if not env_file.exists():
-        print(f"Error: {env_file} not found", file=sys.stderr)
-        print("Copy .env.agent.example to .env.agent.secret and fill in your API key", file=sys.stderr)
-        sys.exit(1)
-
-    with open(env_file, "r") as f:
-        for line in f:
-            line = line.strip()
-            if not line or line.startswith("#"):
-                continue
-            if "=" in line:
-                key, value = line.split("=", 1)
-                env_vars[key.strip()] = value.strip()
-
+    
+    # Load LLM config from .env.agent.secret
+    env_file = PROJECT_ROOT / ".env.agent.secret"
+    if env_file.exists():
+        with open(env_file, "r") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                if "=" in line:
+                    key, value = line.split("=", 1)
+                    env_vars[key.strip()] = value.strip()
+    
+    # Load LMS_API_KEY from .env.docker.secret
+    docker_env_file = PROJECT_ROOT / ".env.docker.secret"
+    if docker_env_file.exists():
+        with open(docker_env_file, "r") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                if "=" in line:
+                    key, value = line.split("=", 1)
+                    # Only add if not already set
+                    if key.strip() not in env_vars:
+                        env_vars[key.strip()] = value.strip()
+    
     return env_vars
 
 
@@ -114,30 +125,96 @@ def read_file(path: str) -> str:
 
 def list_files(path: str) -> str:
     """List files and directories at a given path.
-    
+
     Args:
         path: Relative directory path from project root
-        
+
     Returns:
         Newline-separated listing of entries, or error message
     """
     if not is_safe_path(path):
         return f"Error: Unsafe path '{path}' - path traversal not allowed"
-    
+
     dir_path = PROJECT_ROOT / path
-    
+
     if not dir_path.exists():
         return f"Error: Directory '{path}' not found"
-    
+
     if not dir_path.is_dir():
         return f"Error: '{path}' is not a directory"
-    
+
     try:
         entries = sorted(dir_path.iterdir())
         lines = [entry.name for entry in entries]
         return '\n'.join(lines)
     except Exception as e:
         return f"Error listing directory: {e}"
+
+
+def query_api(method: str, path: str, body: str = None) -> str:
+    """Call the backend API with authentication.
+
+    Args:
+        method: HTTP method (GET, POST, PUT, DELETE)
+        path: API path (e.g., '/items/', '/analytics/completion-rate')
+        body: JSON request body for POST/PUT (optional)
+
+    Returns:
+        JSON string with status_code and body
+    """
+    # Get configuration from environment
+    lms_api_key = os.environ.get("LMS_API_KEY")
+    agent_api_base_url = os.environ.get("AGENT_API_BASE_URL", "http://localhost:42001")
+    
+    if not lms_api_key:
+        return json.dumps({
+            "status_code": 401,
+            "body": "Error: LMS_API_KEY not set in environment"
+        })
+    
+    url = f"{agent_api_base_url}{path}"
+    
+    # Backend uses Bearer token authentication
+    headers = {
+        "Authorization": f"Bearer {lms_api_key}",
+        "Content-Type": "application/json",
+    }
+    
+    print(f"  Executing query_api({method} {path})", file=sys.stderr)
+    
+    try:
+        with httpx.Client(timeout=30.0) as client:
+            if method.upper() == "GET":
+                response = client.get(url, headers=headers)
+            elif method.upper() == "POST":
+                data = json.loads(body) if body else {}
+                response = client.post(url, headers=headers, json=data)
+            elif method.upper() == "PUT":
+                data = json.loads(body) if body else {}
+                response = client.put(url, headers=headers, json=data)
+            elif method.upper() == "DELETE":
+                response = client.delete(url, headers=headers)
+            else:
+                return json.dumps({
+                    "status_code": 400,
+                    "body": f"Error: Unsupported method '{method}'"
+                })
+            
+            result = {
+                "status_code": response.status_code,
+                "body": response.text
+            }
+            return json.dumps(result)
+    except httpx.ConnectError as e:
+        return json.dumps({
+            "status_code": 0,
+            "body": f"Error: Cannot connect to API at {url} - {e}"
+        })
+    except Exception as e:
+        return json.dumps({
+            "status_code": 0,
+            "body": f"Error: {e}"
+        })
 
 
 def get_tool_schemas() -> list[dict]:
@@ -147,13 +224,13 @@ def get_tool_schemas() -> list[dict]:
             "type": "function",
             "function": {
                 "name": "read_file",
-                "description": "Read the contents of a file in the project repository. Use this to read documentation files in the wiki/ directory to find answers.",
+                "description": "Read the contents of a file in the project repository. Use this to read documentation files in the wiki/ directory to find answers, or to read source code files (pyproject.toml, backend/*.py) for system facts.",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "path": {
                             "type": "string",
-                            "description": "Relative path from project root (e.g., 'wiki/git-workflow.md')"
+                            "description": "Relative path from project root (e.g., 'wiki/git-workflow.md', 'pyproject.toml', 'backend/main.py')"
                         }
                     },
                     "required": ["path"]
@@ -170,10 +247,35 @@ def get_tool_schemas() -> list[dict]:
                     "properties": {
                         "path": {
                             "type": "string",
-                            "description": "Relative directory path from project root (e.g., 'wiki')"
+                            "description": "Relative directory path from project root (e.g., 'wiki', 'backend')"
                         }
                     },
                     "required": ["path"]
+                }
+            }
+        },
+        {
+            "type": "function",
+            "function": {
+                "name": "query_api",
+                "description": "Call the backend API to query data or check system status. Use for questions about item counts, scores, analytics, or to test endpoints. For data-dependent questions like 'How many items...' or 'What is the completion rate...'.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "method": {
+                            "type": "string",
+                            "description": "HTTP method (GET, POST, PUT, DELETE)"
+                        },
+                        "path": {
+                            "type": "string",
+                            "description": "API path (e.g., '/items/', '/analytics/completion-rate', '/health')"
+                        },
+                        "body": {
+                            "type": "string",
+                            "description": "JSON request body for POST/PUT requests (optional)"
+                        }
+                    },
+                    "required": ["method", "path"]
                 }
             }
         }
@@ -182,11 +284,11 @@ def get_tool_schemas() -> list[dict]:
 
 def execute_tool(name: str, args: dict) -> str:
     """Execute a tool and return the result.
-    
+
     Args:
-        name: Tool name ('read_file' or 'list_files')
+        name: Tool name ('read_file', 'list_files', or 'query_api')
         args: Tool arguments
-        
+
     Returns:
         Tool result as string
     """
@@ -198,20 +300,31 @@ def execute_tool(name: str, args: dict) -> str:
         path = args.get("path", "")
         print(f"  Executing list_files('{path}')", file=sys.stderr)
         return list_files(path)
+    elif name == "query_api":
+        method = args.get("method", "GET")
+        path = args.get("path", "")
+        body = args.get("body")
+        print(f"  Executing query_api({method} {path})", file=sys.stderr)
+        return query_api(method, path, body)
     else:
         return f"Error: Unknown tool '{name}'"
 
 
-SYSTEM_PROMPT = """You are a documentation assistant. You have access to tools that let you read files and list directories in a project repository.
+SYSTEM_PROMPT = """You are a documentation and system assistant. You have access to tools that let you read files, list directories, and query the backend API.
 
-When answering questions about the project or software engineering:
-1. Use list_files to discover what files exist in relevant directories (especially wiki/)
-2. Use read_file to read the contents of specific files
-3. Find the exact section that answers the question
-4. In your final answer, include a source reference in the format: filepath.md#section-anchor
-5. Section anchors are lowercase with hyphens instead of spaces (e.g., "resolving-merge-conflicts")
+Tool selection guide:
+1. **Wiki/documentation questions** ("According to the wiki...", "What files are in...") → use list_files and read_file on wiki/ directory
+2. **System facts** ("What framework...", "What port...", "What status code...") → use read_file on source code (pyproject.toml, backend/main.py, backend/*.py)
+3. **Data-dependent questions** ("How many items...", "What is the score...", "What is the completion rate...") → use query_api to fetch live data
+4. **Bug diagnosis** → use query_api to reproduce the issue, then read_file to find the buggy code
+5. **General knowledge** (math, facts unrelated to the project) → answer directly without tools
 
-For general knowledge questions (math, facts), answer directly without using tools.
+When using read_file for wiki questions:
+- Find the exact section that answers the question
+- Include a source reference in the format: filepath.md#section-anchor
+- Section anchors are lowercase with hyphens (e.g., "resolving-merge-conflicts")
+
+For data-dependent questions, always use query_api - do not guess values.
 
 Always provide a complete answer. Never respond with an empty answer."""
 

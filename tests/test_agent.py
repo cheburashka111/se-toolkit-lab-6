@@ -15,7 +15,7 @@ def test_agent_output_structure():
     1. Runs agent.py with a simple test question
     2. Parses stdout as JSON
     3. Verifies 'answer' field exists and is non-empty
-    4. Verifies 'source' field exists
+    4. Verifies 'source' field exists (can be empty string for API queries)
     5. Verifies 'tool_calls' field exists and is an array
     """
     # Run agent.py as a subprocess using uv run
@@ -40,7 +40,7 @@ def test_agent_output_structure():
     assert isinstance(output["answer"], str), "'answer' must be a string"
     assert len(output["answer"].strip()) > 0, "'answer' must not be empty"
 
-    # Verify 'source' field exists
+    # Verify 'source' field exists (can be empty string for API queries)
     assert "source" in output, "Missing 'source' field in output"
     assert isinstance(output["source"], str), "'source' must be a string"
 
@@ -110,8 +110,69 @@ def test_wiki_listing_question():
     assert "list_files" in tools_used, f"Expected list_files in tool_calls, got: {tools_used}"
 
 
+def test_framework_question():
+    """Test that agent uses read_file to answer system fact questions.
+
+    This test:
+    1. Runs agent.py with a framework question
+    2. Verifies read_file is in tool_calls (to read pyproject.toml or backend code)
+    """
+    result = subprocess.run(
+        ["uv", "run", "agent.py", "What Python web framework does the backend use?"],
+        capture_output=True,
+        text=True,
+        timeout=60,
+    )
+
+    # Check exit code
+    assert result.returncode == 0, f"Agent failed with stderr: {result.stderr}"
+
+    # Parse stdout as JSON
+    try:
+        output = json.loads(result.stdout)
+    except json.JSONDecodeError as e:
+        raise AssertionError(f"Agent output is not valid JSON: {e}\nStdout: {result.stdout}")
+
+    # Verify tool_calls contains read_file (to read source code)
+    tools_used = [call["tool"] for call in output["tool_calls"]]
+    assert "read_file" in tools_used, f"Expected read_file in tool_calls for system fact, got: {tools_used}"
+
+
+def test_database_items_question():
+    """Test that agent uses query_api for data-dependent questions.
+
+    This test:
+    1. Runs agent.py with a database items question
+    2. Verifies query_api is in tool_calls (to fetch live data)
+    
+    Note: This test verifies the agent attempts to use query_api,
+    even if the backend is not running (error response is acceptable).
+    """
+    result = subprocess.run(
+        ["uv", "run", "agent.py", "How many items are in the database?"],
+        capture_output=True,
+        text=True,
+        timeout=60,
+    )
+
+    # Check exit code (agent should exit 0 even if API is unavailable)
+    assert result.returncode == 0, f"Agent failed with stderr: {result.stderr}"
+
+    # Parse stdout as JSON
+    try:
+        output = json.loads(result.stdout)
+    except json.JSONDecodeError as e:
+        raise AssertionError(f"Agent output is not valid JSON: {e}\nStdout: {result.stdout}")
+
+    # Verify tool_calls contains query_api (to fetch data from API)
+    tools_used = [call["tool"] for call in output["tool_calls"]]
+    assert "query_api" in tools_used, f"Expected query_api in tool_calls for data query, got: {tools_used}"
+
+
 if __name__ == "__main__":
     test_agent_output_structure()
     test_merge_conflict_question()
     test_wiki_listing_question()
+    test_framework_question()
+    test_database_items_question()
     print("All tests passed!")
