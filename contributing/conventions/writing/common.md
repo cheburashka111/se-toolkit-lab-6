@@ -26,6 +26,7 @@
 - [4.24. Inline paths](#424-inline-paths)
 - [4.25. Branch-on-remote references](#425-branch-on-remote-references)
 - [4.26. Example IP address](#426-example-ip-address)
+- [4.27. Troubleshooting sections](#427-troubleshooting-sections)
 
 ## 4.1. Instructions wording
 
@@ -337,27 +338,27 @@ Good: `` Open <pgadmin-url> in a browser. ``
 
 When defining a placeholder, clarify that the value does not include `<` and `>` wherever it may not be obvious to the reader. Use the format: ``(without `<` and `>`)`` at the end of the description sentence.
 
-When asking students to replace placeholders, don't repeat inline what the placeholder means if it already links to a section that explains it — the link is enough.
+When asking students to replace placeholders, include the word "placeholder" explicitly after the placeholder name. Don't repeat inline what the placeholder means if it already links to a section that explains it — the link is enough.
 
 **Multiple placeholders — bullet list:**
 
 ~~~markdown
 Replace:
 
-- [`<placeholder-1>`](link-to-explanation)
-- [`<placeholder-2>`](link-to-explanation)
+- [`<placeholder-1>` placeholder](link-to-explanation)
+- [`<placeholder-2>` placeholder](link-to-explanation)
 ~~~
 
 **Single placeholder (linked):**
 
 ~~~markdown
-Replace [`<placeholder>`](link-to-explanation).
+Replace [`<placeholder>` placeholder](link-to-explanation).
 ~~~
 
 **Single placeholder (not linked):**
 
 ~~~markdown
-Replace `<placeholder>` with <explanation>.
+Replace `<placeholder>` placeholder with <explanation>.
 ~~~
 
 ## 4.21. `docker compose up` commands
@@ -461,3 +462,21 @@ Use `192.0.2.1` as the example IP address in all documentation.
 Good: `192.0.2.1`
 
 Bad: `192.168.1.1`, `10.0.0.1`
+
+## 4.27. Troubleshooting sections
+
+Use a blockquote for troubleshooting content. Do **not** use `<details>` blocks.
+
+Start with an `<h3>Troubleshooting</h3>` label. Each issue is a bold sentence followed by its resolution:
+
+```markdown
+> <h3>Troubleshooting</h3>
+>
+> **Issue title.**
+>
+> Resolution text.
+>
+> **Another issue.**
+>
+> Resolution text.
+```

@@ -148,7 +148,7 @@ Variables for the [`postgres` service](./docker-compose-yml.md#postgres-service)
 
 The name of the [database](./database.md#what-is-a-database) created on the first startup.
 
-Default: `db-lab-4`
+Default: `db-lab-6`
 
 ### `POSTGRES_USER`
 
@@ -238,7 +238,7 @@ Default: `postgres`
 
 The display name for the [`PostgreSQL`](./database.md#postgresql) server in [`pgAdmin`](./pgadmin.md#what-is-pgadmin).
 
-Default: `postgres-lab-4`
+Default: `postgres-lab-6`
 
 ### `CONST_POSTGRESQL_DEFAULT_PORT`
 

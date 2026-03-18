@@ -7,6 +7,7 @@
   - [File name](#file-name)
   - [Extension](#extension)
   - [Location](#location)
+  - [File path](#file-path)
 - [Directory](#directory)
   - [Subdirectory](#subdirectory)
 - [Path](#path)
@@ -18,8 +19,10 @@
   - [Current directory (`.`)](#current-directory-)
   - [Parent directory (`..`)](#parent-directory-)
   - [`Desktop` directory](#desktop-directory)
-  - [`<directory-path>`](#directory-path)
-  - [`<file-path>`](#file-path)
+- [Placeholders](#placeholders)
+  - [`<directory-path>` placeholder](#directory-path-placeholder)
+  - [`<file-path>` placeholder](#file-path-placeholder)
+  - [`<fd-path>` placeholder](#fd-path-placeholder)
 
 ## What is a file system
 
@@ -54,6 +57,10 @@ Example: `README.md` has the extension `.md`.
 The location of a file is its containing [directory](#directory).
 
 Example: for the file `/home/user/project/README.md`, the location is `/home/user/project/`.
+
+### File path
+
+The [path](#path) of a [file](#file).
 
 ## Directory
 
@@ -128,10 +135,31 @@ The `Desktop` directory is the folder that corresponds to the desktop on your sc
 `macOS`: `~/Desktop/`
 `WSL`: `~/Desktop/`
 
-### `<directory-path>`
+## Placeholders
+
+<!-- no toc -->
+- [`<directory-path>` placeholder](#directory-path-placeholder)
+- [`<file-path>` placeholder](#file-path-placeholder)
+- [`<fd-path>` placeholder](#fd-path-placeholder)
+
+### `<directory-path>` placeholder
 
 The [path](#path) of a [directory](#directory) (without `<` and `>`).
 
-### `<file-path>`
+Examples:
+
+- `../wiki` ([relative path](#relative-path))
+- `~/.ssh` ([absolute path](#absolute-path))
+
+### `<file-path>` placeholder
 
 The [path](#path) of a [file](#file) (without `<` and `>`).
+
+Examples:
+
+- `../README.md` ([relative path](#relative-path))
+- `~/.ssh/config` ([absolute path](#absolute-path))
+
+### `<fd-path>` placeholder
+
+The [`<file-path>`](#file-path-placeholder) or the [`<directory-path>`](#directory-path-placeholder).

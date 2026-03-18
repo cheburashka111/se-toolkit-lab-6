@@ -3,16 +3,19 @@
 <h2>Table of contents</h2>
 
 - [What is `Qwen Code`](#what-is-qwen-code)
-- [Set up the `Qwen Code` (local machine)](#set-up-the-qwen-code-local-machine)
-  - [Set up the `Qwen Code` CLI (local machine)](#set-up-the-qwen-code-cli-local-machine)
+- [Set up the `Qwen Code` (LOCAL)](#set-up-the-qwen-code-local)
+  - [Set up the `Qwen Code` CLI (LOCAL)](#set-up-the-qwen-code-cli-local)
   - [Set up the `Qwen Code Companion` extension for `VS Code`](#set-up-the-qwen-code-companion-extension-for-vs-code)
   - [Set up the `GitHub Copilot Chat` extension for `VS Code`](#set-up-the-github-copilot-chat-extension-for-vs-code)
 - [Check the `Qwen Code` credentials file](#check-the-qwen-code-credentials-file)
   - [Check the `Qwen Code` credentials file in the `VS Code Terminal`](#check-the-qwen-code-credentials-file-in-the-vs-code-terminal)
   - [Check the `Qwen Code` credentials file in the `VS Code Editor`](#check-the-qwen-code-credentials-file-in-the-vs-code-editor)
-- [Set up the `Qwen Code` (remote machine)](#set-up-the-qwen-code-remote-machine)
-  - [Set up the `Qwen Code` CLI (remote machine)](#set-up-the-qwen-code-cli-remote-machine)
-  - [Set up the `Qwen Code` API (remote machine)](#set-up-the-qwen-code-api-remote-machine)
+- [Set up the `Qwen Code` CLI (REMOTE)](#set-up-the-qwen-code-cli-remote)
+- [Set up the `Qwen Code` API (REMOTE)](#set-up-the-qwen-code-api-remote)
+  - [Get the `Qwen Code` API config values](#get-the-qwen-code-api-config-values)
+  - [Prepare the request to the `Qwen Code` API](#prepare-the-request-to-the-qwen-code-api)
+  - [Check that the `Qwen Code` API is accessible inside your VM](#check-that-the-qwen-code-api-is-accessible-inside-your-vm)
+  - [Check that `Qwen Code` API is accessible from your computer](#check-that-qwen-code-api-is-accessible-from-your-computer)
 - [Open a chat with `Qwen Code`](#open-a-chat-with-qwen-code)
   - [Open a chat with `Qwen Code` using the CLI](#open-a-chat-with-qwen-code-using-the-cli)
   - [Open a chat with `Qwen Code` using the `Qwen Code Companion` extension for `VS Code`](#open-a-chat-with-qwen-code-using-the-qwen-code-companion-extension-for-vs-code)
@@ -20,6 +23,8 @@
 - [Chat with `Qwen Code`](#chat-with-qwen-code)
   - [Refer to a file](#refer-to-a-file)
   - [Use a skill](#use-a-skill)
+- [Quit the chat with `Qwen Code`](#quit-the-chat-with-qwen-code)
+- [Lab instructions for `Qwen Code`](#lab-instructions-for-qwen-code)
 
 ## What is `Qwen Code`
 
@@ -30,17 +35,18 @@
 
 See:
 
-- [Set up the `Qwen Code` (local machine)](#set-up-the-qwen-code-local-machine).
-- [Set up the `Qwen Code` (remote machine)](#set-up-the-qwen-code-remote-machine).
+- [Set up the `Qwen Code` (LOCAL)](#set-up-the-qwen-code-local).
+- [Set up the `Qwen Code` CLI (REMOTE)](#set-up-the-qwen-code-cli-remote).
+- [Set up the `Qwen Code` API (REMOTE)](#set-up-the-qwen-code-api-remote).
 
-## Set up the `Qwen Code` (local machine)
+## Set up the `Qwen Code` (LOCAL)
 
 <!-- no toc -->
-- Method 1: [Set up the `Qwen Code` CLI (local machine)](#set-up-the-qwen-code-cli-local-machine).
+- Method 1: [Set up the `Qwen Code` CLI (LOCAL)](#set-up-the-qwen-code-cli-local).
 - Method 2: [Set up the `Qwen Code Companion` extension for `VS Code`](#set-up-the-qwen-code-companion-extension-for-vs-code).
 - Method 3: [Set up the `GitHub Copilot Chat` extension for `VS Code`](#set-up-the-github-copilot-chat-extension-for-vs-code).
 
-### Set up the `Qwen Code` CLI (local machine)
+### Set up the `Qwen Code` CLI (LOCAL)
 
 > [!NOTE]
 > See [CLI](./cli.md#what-is-a-cli)
@@ -117,40 +123,15 @@ This file contains the `Qwen Code` authentication credentials.
 
 The file must be non-empty.
 
-## Set up the `Qwen Code` (remote machine)
-
-- Method 1: [Set up the `Qwen Code` CLI (remote machine)](#set-up-the-qwen-code-cli-remote-machine).
-- Method 2: [Set up the `Qwen Code` API (remote machine)](#set-up-the-qwen-code-api-remote-machine).
-
-### Set up the `Qwen Code` CLI (remote machine)
+## Set up the `Qwen Code` CLI (REMOTE)
 
 1. [Connect to the VM](./ssh.md#connect-to-the-vm).
 
-2. To install [`pnpm`](./nodejs.md#pnpm),
+2. [Install `Node.js`](./nodejs.md#install-nodejs).
 
-   [run in the `VS Code Terminal`](./vs-code.md#run-a-command-in-the-vs-code-terminal):
+3. [Install `pnpm`](./nodejs.md#install-pnpm).
 
-   ```terminal
-   nix profile add nixpkgs#pnpm
-   ```
-
-3. To set up `pnpm`,
-
-   [run in the `VS Code Terminal`](./vs-code.md#run-a-command-in-the-vs-code-terminal):
-
-   ```terminal
-   pnpm setup
-   ```
-
-4. To update the current shell environment with `pnpm` variables set in the [shell profile](./shell.md#profile),
-
-   [run in the `VS Code Terminal`](./vs-code.md#run-a-command-in-the-vs-code-terminal):
-
-   ```terminal
-   source ~/.bashrc
-   ```
-
-5. To install [`Qwen Code`](#what-is-qwen-code),
+4. To install [`Qwen Code`](#what-is-qwen-code),
 
    [run in the `VS Code Terminal`](./vs-code.md#run-a-command-in-the-vs-code-terminal):
 
@@ -158,23 +139,28 @@ The file must be non-empty.
    pnpm add -g @qwen-code/qwen-code
    ```
 
-6. [Open a chat with `Qwen Code` using the CLI](#open-a-chat-with-qwen-code-using-the-cli).
+5. [Open a chat with `Qwen Code` using the CLI](#open-a-chat-with-qwen-code-using-the-cli).
 
-7. Write `/auth` in the chat to [authenticate via Qwen OAuth](https://github.com/QwenLM/qwen-code?tab=readme-ov-file#authentication).
+6. Write `/auth` in the chat to [authenticate via Qwen OAuth](https://github.com/QwenLM/qwen-code?tab=readme-ov-file#authentication).
 
-8. Open the link in a browser to complete the authentication procedure.
+7. Open the link in a browser to complete the authentication procedure.
 
-### Set up the `Qwen Code` API (remote machine)
+8. [Quit the chat with `Qwen Code`](#quit-the-chat-with-qwen-code).
 
-> [`qwen-code-oai-proxy`](https://github.com/aptdnfapt/qwen-code-oai-proxy) exposes [`Qwen Code`](#what-is-qwen-code) through an [OpenAI-compatible API](./llm.md#openai-compatible-api) so that other tools can use it as an [LLM](./llm.md#what-is-an-llm).
+## Set up the `Qwen Code` API (REMOTE)
 
-1. [Set up the `Qwen Code` CLI (remote machine)](#set-up-the-qwen-code-cli-remote-machine).
+> [`qwen-code-oai-proxy`](https://github.com/inno-se-toolkit/qwen-code-oai-proxy) exposes [`Qwen Code`](#what-is-qwen-code) through an [OpenAI-compatible API](./llm.md#openai-compatible-api) so that other tools can use it as an [LLM](./llm.md#what-is-an-llm).
+
+<!-- TODO visualize -->
+
+1. [Set up the `Qwen Code` CLI (REMOTE)](#set-up-the-qwen-code-cli-remote).
 
    Keep working in the opened `VS Code Terminal`.
    You complete the following steps on your VM.
 
-2. To [clone the repo using the `VS Code Terminal`](./git-vscode.md#clone-the-repo-using-the-vs-code-terminal):
-   <https://github.com/inno-se-toolkit/qwen-code-oai-proxy>
+2. To [clone using the `VS Code Terminal` the repo](./git-vscode.md#clone-the-repo-using-the-vs-code-terminal)
+
+   <https://github.com/inno-se-toolkit/qwen-code-oai-proxy>,
 
    [run in the `VS Code Terminal`](./vs-code.md#run-a-command-in-the-vs-code-terminal):
 
@@ -198,7 +184,7 @@ The file must be non-empty.
    cp .env.example .env
    ```
 
-5. To open `.env` in `nano`,
+5. To open the `.env` file in `nano`,
 
    [run in the `VS Code Terminal`](./vs-code.md#run-a-command-in-the-vs-code-terminal):
 
@@ -212,7 +198,7 @@ The file must be non-empty.
 
 7. Save the file (`Ctrl + O`).
 
-8. To start the `Qwen` API,
+8. To start the `Qwen Code` API,
 
    [run in the `VS Code Terminal`](./vs-code.md#run-a-command-in-the-vs-code-terminal):
 
@@ -220,7 +206,23 @@ The file must be non-empty.
    docker compose up --build -d
    ```
 
-9. To get the value of `HOST_PORT` in `.env`,
+9. [Check that `Qwen Code` API is accessible inside your VM](#check-that-the-qwen-code-api-is-accessible-inside-your-vm).
+
+10. [Check that `Qwen Code` API is accessible from your computer](#check-that-qwen-code-api-is-accessible-from-your-computer).
+
+### Get the `Qwen Code` API config values
+
+1. [Connect to your VM](./vm.md#connect-to-the-vm) if not yet connected.
+
+2. To enter the repository directory,
+
+   [run in the `VS Code Terminal`](./vs-code.md#run-a-command-in-the-vs-code-terminal):
+
+   ```terminal
+   cd ~/qwen-code-oai-proxy
+   ```
+
+3. To get the value of `HOST_PORT` in `.env`,
 
    [run in the `VS Code Terminal`](./vs-code.md#run-a-command-in-the-vs-code-terminal):
 
@@ -228,38 +230,44 @@ The file must be non-empty.
    cat .env | grep HOST_PORT
    ```
 
-10. The API is available at `http://localhost:<qwen-api-port>/v1`.
+4. To get the value of `QWEN_API_KEY` in `.env`,
 
-    Replace `<qwen-api-port>` with the value of `HOST_PORT` (without `<` and `>`) that you got.
+   [run in the `VS Code Terminal`](./vs-code.md#run-a-command-in-the-vs-code-terminal):
 
-    Example: `http://localhost:42005/v1`
+   ```terminal
+   cat .env | grep QWEN_API_KEY
+   ```
 
-11. To check that the `Qwen` API works,
+### Prepare the request to the `Qwen Code` API
 
-    [run in the `VS Code Terminal`](./vs-code.md#run-a-command-in-the-vs-code-terminal):
+1. [Get the `Qwen Code` API config values](#get-the-qwen-code-api-config-values).
 
-    ```terminal
-    curl -s http://127.0.0.1:<qwen-api-port>/v1/chat/completions \
-      -H "Content-Type: application/json" \
-      -H "Authorization: Bearer <qwen-api-key>" \
-      -d '{"model":"qwen3-coder-plus","messages":[{"role":"user","content":"What is 2+2?"}]}' \
-      | jq .
-    ```
+   You need `HOST_PORT` and `QWEN_API_KEY`.
 
-    Replace:
+2. Copy the request template to the clipboard:
 
-    - `<qwen-api-port>`
-    - `<qwen-api-key>` with the value of `QWEN_API_KEY` in `.env`.
-    - (Optional) `qwen3-coder-plus` in `"model": "qwen3-coder-plus"` with one of the available models:
+   ```terminal
+   curl -s http://<qwen-code-api-address>:<qwen-api-port>/v1/chat/completions \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Bearer <qwen-api-key>" \
+     -d '{"model":"<qwen-model>","messages":[{"role":"user","content":"What is 2+2?"}]}' \
+     | jq .
+   ```
 
-      - `coder-model` — `Qwen 3.5 Plus` (recommended).
-      - `qwen3-coder-plus` — `Qwen 3 Coder Plus`.
-      - `qwen3-coder-flash` — `Qwen 3 Coder Flash` (faster).
+3. Before you run it, replace:
 
-    The output should be similar to this:
+   - `<qwen-api-port>` with the value of `HOST_PORT`
+   - `<qwen-api-key>` with the value of `QWEN_API_KEY`
+   - `<qwen-model>` with one of the available models:
 
-    ```terminal
-    {
+     - `coder-model` — `Qwen 3.5 Plus` (recommended).
+     - `qwen3-coder-plus` — `Qwen 3 Coder Plus`.
+     - `qwen3-coder-flash` — `Qwen 3 Coder Flash` (faster).
+
+4. When you run it, the output should be similar to this:
+
+   ```terminal
+   {
       "created": 1773379590,
       "usage": {
          "completion_tokens": 8,
@@ -282,30 +290,38 @@ The file must be non-empty.
          }
       ],
       "object": "chat.completion"
-    }
-    ```
+   }
+   ```
 
-12. To check that you can access the deployed `Qwen` API from your local machine:
-  
-    1. Open a new `VS Code Terminal`.
-    2. To query the `Qwen` API,
+### Check that the `Qwen Code` API is accessible inside your VM
 
-       [run in the `VS Code Terminal`](./vs-code.md#run-a-command-in-the-vs-code-terminal):
+1. [Get the `Qwen Code` API config values](#get-the-qwen-code-api-config-values)
 
-       ```terminal
-       curl -s http://<your-vm-ip-address>:<qwen-api-port>/v1/chat/completions \
-         -H "Content-Type: application/json" \
-         -H "Authorization: Bearer <qwen-api-key>" \
-         -d '{"model":"qwen3-coder-plus","messages":[{"role":"user","content":"What is 2+2?"}]}' \
-         | jq .
-       ```
+2. Stay in that `VS Code Terminal` connected to the VM.
 
-       Replace
-       - `<your-vm-ip-address>`
-       - `<qwen-api-port>`
-       - `<qwen-api-key>`
+3. [Prepare the request to the `Qwen Code` API](#prepare-the-request-to-the-qwen-code-api).
 
-<!-- TODO create own sections for querying the API -->
+   Replace:
+
+   - `<qwen-code-api-address>` with `localhost` because you'll run the request on your VM.
+
+4. [Run in the `VS Code Terminal`](./vs-code.md#run-a-command-in-the-vs-code-terminal)
+   the prepared request.
+
+### Check that `Qwen Code` API is accessible from your computer
+
+1. [Get the `Qwen Code` API config values](#get-the-qwen-code-api-config-values).
+
+2. Open a new `VS Code Terminal`.
+
+3. [Prepare the request to the `Qwen Code` API](#prepare-the-request-to-the-qwen-code-api).
+
+   Replace:
+
+   - `<qwen-code-api-address>` with [`<your-vm-ip-address>`](./vm.md#your-vm-ip-address) because you'll run the request on your computer (laptop).
+
+4. [Run in the `VS Code Terminal`](./vs-code.md#run-a-command-in-the-vs-code-terminal)
+   the prepared request.
 
 ## Open a chat with `Qwen Code`
 
@@ -325,10 +341,7 @@ The file must be non-empty.
    qwen
    ```
 
-2. If you want to exit the chat:
-
-   1. Write `/quit` in the chat.
-   2. Press `Enter`.
+   See [Quit the chat with `Qwen Code`](#quit-the-chat-with-qwen-code).
 
 ### Open a chat with `Qwen Code` using the `Qwen Code Companion` extension for `VS Code`
 
@@ -353,10 +366,6 @@ Method 2:
 4. Click `Auto` (`Pick Model`).
 5. Click `Qwen 3 Coder Plus`.
 
-## Lab instructions for `Qwen Code`
-
-`Qwen Code` automatically reads `AGENTS.md` in the project root. This file contains instructions that guide the agent to help you learn — not just generate code. The agent will ask you questions, help you plan, and encourage you to write code yourself.
-
 ## Chat with `Qwen Code`
 
 Actions:
@@ -367,7 +376,7 @@ Actions:
 
 ### Refer to a file
 
-Write `@<file-path>` (without `<` and `>`) to refer to the file at the [`<file-path>`](./file-system.md#file-path).
+Write `@<file-path>` (without `<` and `>`) to refer to the file at the [`<file-path>`](./file-system.md#file-path-placeholder).
 
 Example: `@main.py`.
 
@@ -383,11 +392,11 @@ Example: `@main.py`.
    See [Refer to a file](#refer-to-a-file).
 5. Press `Enter`.
 
-<!-- TODO qwen on VM -->
-<!-- 
+## Quit the chat with `Qwen Code`
 
-#### Install nodejs on the VM
+1. Write `/quit`.
+2. Press `Enter`.
 
-- scp ~/.qwen/oauth_creds.json se-toolkit-vm:~/.qwen/oauth_creds.json
-- nix profile add nixpkgs#nodejs_25
- -->
+## Lab instructions for `Qwen Code`
+
+[`Qwen Code`](#what-is-qwen-code) automatically reads [`AGENTS.md`](../AGENTS.md) in the project root. This file contains instructions that guide the agent to help you learn — not just generate code. The agent will ask you questions, help you plan, and encourage you to write code yourself.

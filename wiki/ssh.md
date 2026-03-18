@@ -3,7 +3,7 @@
 <h2>Table of contents</h2>
 
 - [What is `SSH`](#what-is-ssh)
-- [`SSH` keys](#ssh-keys)
+- [`SSH` key pair](#ssh-key-pair)
   - [`SSH` public key](#ssh-public-key)
   - [`SSH` private key](#ssh-private-key)
 - [`SSH` daemon](#ssh-daemon)
@@ -37,7 +37,7 @@ All commands below assume a Unix shell: `Bash` (`Linux`, `WSL`) or `Zsh` (`macOS
 > [!IMPORTANT]
 > **Windows users:** Use `WSL` (Windows Subsystem for Linux). Do not use `PowerShell`, `cmd.exe`, or `Git Bash` — the commands below are not guaranteed to work there.
 
-## `SSH` keys
+## `SSH` key pair
 
 `SSH` uses a key pair for authentication:
 
@@ -164,9 +164,7 @@ Because you used a custom name, your keys are named `se_toolkit_key` (private) a
 
 ### Verify the `SSH` setup
 
-1. [Open a new `VS Code Terminal`](./vs-code.md#open-a-new-vs-code-terminal).
-2. [Check the current shell in the `VS Code Terminal`](./vs-code.md#check-the-current-shell-in-the-vs-code-terminal).
-3. To list the loaded keys,
+1. To list the loaded keys,
 
    [run in the `VS Code Terminal`](./vs-code.md#run-a-command-in-the-vs-code-terminal):
 
@@ -174,9 +172,9 @@ Because you used a custom name, your keys are named `se_toolkit_key` (private) a
    ssh-add -l
    ```
 
-4. You should see your key fingerprint in the output.
+2. You should see your key fingerprint in the output.
 
-5. If you see `The agent has no identities`, run the [start `ssh-agent` step](#start-the-ssh-agent) again.
+3. If you see `The agent has no identities`, run the [start `ssh-agent` step](#start-the-ssh-agent) again.
 
 ## Add the host to `SSH`
 

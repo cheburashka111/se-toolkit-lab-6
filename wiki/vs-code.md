@@ -17,6 +17,8 @@
   - [Open the `Command Palette`](#open-the-command-palette)
   - [Run a command using the `Command Palette`](#run-a-command-using-the-command-palette)
   - [Select an option from a list](#select-an-option-from-a-list)
+- [`Quick Open`](#quick-open)
+  - [Open the `Quick Open`](#open-the-quick-open)
 - [`Panel Toolbar`](#panel-toolbar)
 - [`VS Code Terminal`](#vs-code-terminal)
   - [Open the `VS Code Terminal`](#open-the-vs-code-terminal)
@@ -55,12 +57,14 @@
   - [Change the workspace settings](#change-the-workspace-settings)
 - [Common actions](#common-actions)
   - [Open the directory](#open-the-directory)
+    - [Open the directory using the `Open Folder` command](#open-the-directory-using-the-open-folder-command)
     - [(`Windows` only) Open the directory in `WSL`](#windows-only-open-the-directory-in-wsl)
     - [(`Windows` only) Reopen the directory in `WSL`](#windows-only-reopen-the-directory-in-wsl)
   - [Open the file](#open-the-file)
     - [Open the file using `Quick Open`](#open-the-file-using-quick-open)
-    - [Open the file using `code`](#open-the-file-using-code)
-    - [Open the file using a context menu](#open-the-file-using-a-context-menu)
+  - [Open the file or the directory](#open-the-file-or-the-directory)
+    - [Open the file or the directory using `code`](#open-the-file-or-the-directory-using-code)
+    - [Open the file or the directory using the context menu](#open-the-file-or-the-directory-using-the-context-menu)
   - [Open the `Markdown` preview](#open-the-markdown-preview)
 - [Language server](#language-server)
   - [Type on hover](#type-on-hover)
@@ -210,6 +214,18 @@ Method 2:
 1. Change the highlighted option using `UpArrow` and `DownArrow` on your keyboard.
 2. Press `Enter` to confirm the option.
 
+## `Quick Open`
+
+Open a file.
+
+Actions:
+
+- [Open the `Quick Open`](#open-the-quick-open)
+
+### Open the `Quick Open`
+
+1. Press `Ctrl+P` (`Cmd+P` on `macOS`).
+
 ## `Panel Toolbar`
 
 Switch between panels.
@@ -343,7 +359,7 @@ Method 2:
 ### (`Windows` only) Switch to the `Linux` shell for the `VS Code Terminal`
 
 > [!NOTE]
-> See [`Linux` shell](./shell.md#linix-shell).
+> See [`Linux` shell](./shell.md#linux-shell).
 
 1. Make sure you can [run `VS Code` in `WSL`](#windows-only-set-up-running-vs-code-in-wsl).
 2. [Reopen the directory in `WSL`](#windows-only-reopen-the-directory-in-wsl)
@@ -600,7 +616,19 @@ Here are some [workspace settings](#workspace-settings) that you can change:
 
 ## Common actions
 
+<!-- no toc -->
+- [Open the directory](#open-the-directory)
+- [Open the file](#open-the-file)
+- [Open the file or the directory](#open-the-file-or-the-directory)
+
 ### Open the directory
+
+- Method 1: [Open the directory using the `Open Folder` command](#open-the-directory-using-the-open-folder-command)
+- Method 2: [Open the directory using `code`](#open-the-file-or-the-directory-using-code)
+- Method 3: [(`Windows` only) Open the directory in `WSL`](#windows-only-open-the-directory-in-wsl)
+- Method 4: [(`Windows` only) Reopen the directory in `WSL`](#windows-only-reopen-the-directory-in-wsl)
+
+#### Open the directory using the `Open Folder` command
 
 > [!NOTE]
 > The `<directory-name>` is the name of a directory (without `<` and `>`) that you want to open.
@@ -609,17 +637,20 @@ Here are some [workspace settings](#workspace-settings) that you can change:
 
 1. [Run using the `Command Palette`](./vs-code.md#command-palette):
    `File: Open Folder...`
+
 2. Find the directory `<directory-name>`.
+
 3. Open this directory.
 
    `VS Code` should now open in that directory.
+
 4. [Open the `Explorer`](./vs-code.md#open-the-vs-code-explorer).
 
    You should see `<DIRECTORY-NAME>` there.
 
    Example: `SOFTWARE-ENGINEERING-TOOLKIT`
-5. (`Windows` only) [Reopen the directory in `WSL`](#windows-only-reopen-the-directory-in-wsl)
-   to use the [file system](./file-system.md#what-is-a-file-system) of [`Linux`](./linux.md#what-is-linux).
+
+5. [(`Windows` only) Reopen the directory in `WSL`](#windows-only-reopen-the-directory-in-wsl).
 
 #### (`Windows` only) Open the directory in `WSL`
 
@@ -634,50 +665,66 @@ Here are some [workspace settings](#workspace-settings) that you can change:
 1. [Run using the `Command Palette`](./vs-code.md#run-a-command-using-the-command-palette):
    `WSL: Reopen Folder in WSL`.
 2. Choose `Ubuntu 24.04`.
-3. If you don't see such an option, [set up running `VS Code` in `WSL`](#windows-only-set-up-running-vs-code-in-wsl)
+3. If you don't see such an option, [set up running `VS Code` in `WSL`](#windows-only-set-up-running-vs-code-in-wsl).
+4. [Check the current shell in the `VS Code Terminal`](#check-the-current-shell-in-the-vs-code-terminal).
 
 ### Open the file
 
 <!-- no toc -->
-- Method 1: [Open the local file using `VS Code Explorer`](#open-the-local-file-using-the-vs-code-explorer)
+- Method 1: [Open the local file using the `VS Code Explorer`](#open-the-local-file-using-the-vs-code-explorer)
 - Method 2: [Open the file using `Quick Open`](#open-the-file-using-quick-open)
-- Method 3: [Open the file using `code`](#open-the-file-using-code)
-- Method 4: [Open the file using a context menu](#open-the-file-using-a-context-menu)
+- Method 3: [Open the file using `code`](#open-the-file-or-the-directory-using-code)
+- Method 4: [Open the file using the context menu](#open-the-file-or-the-directory-using-the-context-menu)
 
 #### Open the file using `Quick Open`
 
-1. Press `Ctrl+P` (`Cmd+P` on `macOS`).
-2. Start typing the name of the file.
-3. [Select](#select-an-option-from-a-list) the file.
+Method 1 (file inside the directory where `VS Code` is opened):
 
-#### Open the file using `code`
+1. [Open the `Quick Open`](#open-the-quick-open).
+2. Start writing the [relative path](./file-system.md#relative-path) of the file.
+   Example: `wiki/`.
+3. [Select the file from the list](#select-an-option-from-a-list).
 
-1. [Open a new `VS Code Terminal`](#open-a-new-vs-code-terminal) if something is running in your current `VS Code Terminal`.
-2. To open a file from the terminal,
+Method 2 (file at the absolute [`<file-path>`](./file-system.md#file-path-placeholder)):
 
-   [run in the `VS Code Terminal`](#run-a-command-in-the-vs-code-terminal):
+1. [Open the `Quick Open`](#open-the-quick-open).
+2. Write the file path
+
+### Open the file or the directory
+
+- Method 1: [Open the file or the directory using `code`](#open-the-file-or-the-directory-using-code)
+- Method 2: [Open the file or the directory using the context menu](#open-the-file-or-the-directory-using-the-context-menu)
+
+#### Open the file or the directory using `code`
+
+1. Open a new terminal (e.g., [open a new `VS Code Terminal`](#open-a-new-vs-code-terminal)).
+
+2. Run in the terminal
 
    ```terminal
-   code <file-path>
+   code <fd-path>
    ```
 
-   See [`<file-path>`](./file-system.md#file-path).
+   See [`<fd-path>`](./file-system.md#file-path).
 
-   **Note:** the file will be created if it doesn't yet exist.
+   **Note:** the file or the directory will be created if it doesn't yet exist.
 
-   <details><summary><b>Troubleshooting (click to open)</b></summary>
+   > <h3>Troubleshooting</h3>
+   >
+   > **(`macOS` only) `command code doesn't exist`**
+   >
+   > [Add `VS Code` to `PATH`](#macos-only-add-vs-code-to-path).
 
-   <h4>(<code>macOS</code> only) <code>command code doesn't exist</code></h4>
+3. [(`Windows` only) Reopen the directory in `WSL`](#windows-only-reopen-the-directory-in-wsl) if you open the directory.
 
-   [Add `VS Code` to `PATH`](#macos-only-add-vs-code-to-path).
+#### Open the file or the directory using the context menu
 
-   </details>
-
-#### Open the file using a context menu
-
-1. Right-click a file.
-2. Find `Open with...` or similar.
-3. Choose `VS Code`.
+1. Open any file explorer app installed on your system.
+2. Find the file or the directory in that app.
+3. Right-click the file or the directory.
+4. Find `Open with...` or similar.
+5. Choose `VS Code`.
+6. [(`Windows` only) Reopen the directory in `WSL`](#windows-only-reopen-the-directory-in-wsl) if you open the directory.
 
 ### Open the `Markdown` preview
 
@@ -778,8 +825,10 @@ Follow the installation instructions for your platform:
 Complete these steps:
 
 1. [Enable `WSL`](https://code.visualstudio.com/docs/remote/wsl-tutorial#_enable-wsl).
-2. Open a terminal (not the `VS Code Terminal`).
-3. To install `Ubuntu` in `WSL`,
+
+2. Open a terminal (not the [`VS Code Terminal`](./vs-code.md#vs-code-terminal)).
+
+3. To install [`Ubuntu`](./linux-distros.md#ubuntu) in `WSL`,
 
    [run in the `VS Code Terminal`](#run-a-command-in-the-vs-code-terminal):
 
@@ -787,12 +836,21 @@ Complete these steps:
    wsl --install -d Ubuntu-24.04
    ```
 
-   **Note:** [`Ubuntu`](./linux-distros.md#ubuntu) is a [`Linux` distro](./linux-distros.md#what-is-a-linux-distro).
+4. To set it as the default distro,
 
-4. Open [`VS Code`](#what-is-vs-code).
-5. [Install the extension](./vs-code.md#install-the-vs-code-extension) with the identifier `ms-vscode-remote.remote-wsl`.
+   [run in the `VS Code Terminal`](#run-a-command-in-the-vs-code-terminal):
+
+   ```terminal
+   wsl --set-default Ubuntu-24.04
+   ```
+
+5. Open the [`VS Code`](#what-is-vs-code).
+
+6. [Install the extension](./vs-code.md#install-the-vs-code-extension) with the identifier `ms-vscode-remote.remote-wsl`.
 
    This extension lets you use `VS Code` in [`WSL`](./operating-system.md#wsl).
+
+7. Try to [open a directory in `WSL`](#windows-only-open-the-directory-in-wsl).
 
 ### (`macOS` only) Add `VS Code` to `PATH`
 

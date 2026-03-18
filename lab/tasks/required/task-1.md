@@ -6,8 +6,25 @@ Build a CLI that connects to an LLM and answers questions. This is the foundatio
 
 A `Python` CLI program (`agent.py`) that takes a question, sends it to an LLM, and returns a structured JSON answer. No tools or agentic loop yet — just the basic plumbing: parse input, call the LLM, format output. You will add tools and the agentic loop in Tasks 2–3.
 
-```
-User question → agent.py → LLM API → JSON answer
+```mermaid
+sequenceDiagram
+    box Local machine
+        participant User
+        participant agent.py
+    end
+    box VM
+        participant Proxy as qwen-code-oai-proxy
+    end
+    box Qwen Cloud
+        participant LLM as Qwen 3 Coder
+    end
+
+    User->>agent.py: CLI arg (question)
+    agent.py->>Proxy: POST /v1/chat/completions
+    Proxy->>LLM: proxy request
+    LLM-->>Proxy: response
+    Proxy-->>agent.py: response
+    agent.py-->>User: stdout {answer, tool_calls}
 ```
 
 **Input** — a question as the first command-line argument:
@@ -34,20 +51,37 @@ uv run agent.py "What does REST stand for?"
 
 Your agent needs an LLM that supports the OpenAI-compatible chat completions API. You are free to use any provider.
 
-[OpenRouter](https://openrouter.ai) offers free models with no credit card required. Look for models that support **tool calling** — you will need this in later tasks.
+**Recommended: [Set up the Qwen Code API on your VM](../../../wiki/qwen.md#set-up-the-qwen-code-api-remote)**
 
-**Recommended models** (free, reliable tool calling):
+[Qwen Code](../../../wiki/qwen.md#what-is-qwen-code) provides **1000 free requests per day**, works from Russia, and requires no credit card.
 
-| Model | Tool calling | Notes |
-|-------|-------------|-------|
-| `meta-llama/llama-3.3-70b-instruct:free` | Strong | Default in `.env.agent.example` |
-| `mistralai/mistral-small-3.1-24b-instruct:free` | Strong | Good alternative |
-| `qwen/qwen3-coder:free` | Good | Alternative |
+Follow the [setup instructions](../setup-simple.md#17-set-up-llm-access-qwen-code-api) to deploy it on your VM.
 
-> [!TIP]
-> Free models change frequently on OpenRouter. Check the [free models collection](https://openrouter.ai/collections/free-models) for the latest list. Filter for models that support **tool calling** — you will need this in Tasks 2–3.
+| Model              | Tool calling | Notes                                        |
+| ------------------ | ------------ | -------------------------------------------- |
+| `qwen3-coder-plus` | Strong       | Recommended, default in `.env.agent.example` |
+| `coder-model`      | Strong       | Qwen 3.5 Plus                                |
 
-Register in OpenRouter and get an API key from them. This will be your LLM_API_KEY in `.env.agent.secret` (gitignored by the `*.secret` pattern). An example file is provided:
+<details><summary><b>Alternative: OpenRouter (click to open)</b></summary>
+
+[OpenRouter](https://openrouter.ai) offers free models with no credit card required.
+
+| Model                                    | Tool calling | Notes            |
+| ---------------------------------------- | ------------ | ---------------- |
+| `meta-llama/llama-3.3-70b-instruct:free` | Strong       | Good alternative |
+| `qwen/qwen3-coder:free`                  | Good         | Alternative      |
+
+> [!WARNING]
+> **OpenRouter free-tier limitations:**
+>
+> - Free models have a **50 requests per day** limit per account.
+> - Free models can be **temporarily unavailable** due to upstream provider load (`429` errors).
+> - The autochecker runs 10 questions against your agent — free-tier rate limits may cause failures.
+> - If you use OpenRouter, plan your testing carefully: use `run_eval.py --index N` to test one question at a time.
+
+</details>
+
+Create the agent environment file:
 
 ```bash
 cp .env.agent.example .env.agent.secret
@@ -56,13 +90,6 @@ cp .env.agent.example .env.agent.secret
 Edit `.env.agent.secret` and fill in `LLM_API_KEY`, `LLM_API_BASE`, and `LLM_MODEL`. Your agent reads from this file.
 
 > **Note:** This is **not** the same as `LMS_API_KEY` in `.env.docker.secret`. That one protects your backend LMS endpoints. `LLM_API_KEY` authenticates with your LLM provider.
-
-> [!WARNING]
-> **Rate limits on free models:**
-> - Free-tier models have a **50 requests per day** limit per account.
-> - Free models can also be **temporarily unavailable** due to upstream provider load. If you get a `429` error with a message about "temporarily rate-limited upstream", it means the model is overloaded — not that you hit your daily limit. Try again later or switch to a different free model.
-> - Plan your testing carefully: use `run_eval.py --index N` to test one question at a time instead of running the full eval repeatedly.
-> - Do not run `run_eval.py` until you have completed all three required tasks. Each run uses 10 requests.
 
 ## Deliverables
 
